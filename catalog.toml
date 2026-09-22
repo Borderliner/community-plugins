@@ -2292,8 +2292,8 @@ tags = ["desktop", "time", "utility"]
 [[plugin]]
 id = "jrohland/claudecode"
 name = "Claude Code Usage"
-version = "1.0.0"
-updated_at = 1788734110
+version = "1.0.1"
+updated_at = 1790099872
 added_at = 1788734110
 author = "Nicolas Bellamy (Noctalia port by jrohland)"
 license = "MIT"
