@@ -2872,3 +2872,16 @@ icon = "snowflake"
 description = "Search nixpkgs, NixOS, Home Manager and NUR from the launcher via nix-search-tv"
 plugin_api = 24
 tags = ["launcher", "service", "utility", "development"]
+
+[[plugin]]
+id = "nuddel69/nightscout-monitor"
+name = "Nightscout Monitor"
+version = "1.0.0"
+updated_at = 1790077670
+added_at = 1790077670
+author = "Nuddel69"
+license = "AGPL-3.0"
+icon = "vaccine-bottle"
+description = "Widget icon for monitoring nightscout glucose information"
+plugin_api = 3
+tags = ["bar", "utility"]
