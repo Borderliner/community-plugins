@@ -5,7 +5,7 @@ plugin_api = 22
 author = "borderliner"
 license = "MIT"
 dependencies = []
-tags = ["calendar", "time", "persian"]
+tags = ["time", "clock", "utility"]
 icon = "calendar"
 description = "Iranian Solar Hijri calendar with official holidays, plus Hijri Qamari and Gregorian dates."
 
