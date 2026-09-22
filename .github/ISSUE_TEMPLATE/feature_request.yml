@@ -125,6 +125,7 @@ body:
         - mihomo-control
         - mimir
         - mini-docker
+        - misr-quran-radio
         - network-control
         - network-toolkit
         - nextboot-selector
