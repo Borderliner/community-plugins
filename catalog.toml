@@ -2885,3 +2885,16 @@ icon = "vaccine-bottle"
 description = "Widget icon for monitoring nightscout glucose information"
 plugin_api = 3
 tags = ["bar", "utility"]
+
+[[plugin]]
+id = "muhammadessam/misr-quran-radio"
+name = "Holy Quran Radio"
+version = "0.1.0"
+updated_at = 1790078654
+added_at = 1790078654
+author = "muhammadessam"
+license = "MIT"
+icon = "radio"
+description = "Egyptian Holy Quran Radio live stream with the daily programme schedule."
+plugin_api = 24
+tags = ["bar", "panel", "service", "audio", "media", "utility"]
