@@ -2898,3 +2898,16 @@ icon = "radio"
 description = "Egyptian Holy Quran Radio live stream with the daily programme schedule."
 plugin_api = 24
 tags = ["bar", "panel", "service", "audio", "media", "utility"]
+
+[[plugin]]
+id = "theblackdon/theme-switcher"
+name = "Theme Switcher"
+version = "0.1.0"
+updated_at = 1790079299
+added_at = 1790079299
+author = "theblackdon"
+license = "MIT"
+icon = "palette"
+description = "Browse saved themes in a carousel and apply palette, wallpaper, and templates in one click."
+plugin_api = 28
+tags = ["theming"]
