@@ -199,6 +199,7 @@ body:
         - taildrop
         - tailnet
         - tailscale
+        - theme-switcher
         - thinkpad-fan
         - thinkpad-led
         - thunderbird-companion
