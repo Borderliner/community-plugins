@@ -2668,8 +2668,8 @@ tags = ["bar", "panel", "service", "development", "productivity", "network", "ut
 [[plugin]]
 id = "thaer99ob/default-apps"
 name = "Default Apps"
-version = "1.0.0"
-updated_at = 1789560555
+version = "1.0.1"
+updated_at = 1790130431
 added_at = 1789560555
 author = "Thaer99ob"
 license = "MIT"
