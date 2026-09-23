@@ -2924,3 +2924,16 @@ icon = "robot"
 description = "Monitor Herdr sessions and coding agents from the Noctalia bar."
 plugin_api = 24
 tags = ["bar", "panel", "service", "ai", "development", "productivity"]
+
+[[plugin]]
+id = "fel/quill"
+name = "Quill"
+version = "1.0.0"
+updated_at = 1790164567
+added_at = 1790164567
+author = "fel"
+license = "MIT"
+icon = "notes"
+description = "Markdown notes and todos from the bar, with AI capture, summaries, rewriting and Q&A over your notes."
+plugin_api = 24
+tags = ["bar", "panel", "launcher", "ai", "productivity", "utility"]
