@@ -2963,3 +2963,16 @@ icon = "calendar"
 description = "Iranian Solar Hijri calendar with official holidays, plus Hijri Qamari and Gregorian dates."
 plugin_api = 22
 tags = ["time", "clock", "utility"]
+
+[[plugin]]
+id = "remo/noctes"
+name = "Noctes"
+version = "0.19.0"
+updated_at = 1790168059
+added_at = 1790168059
+author = "remo"
+license = "MIT"
+icon = "note"
+description = "Configurable stickers for your desktop: one widget per note, theme-aware paper, plain-text storage."
+plugin_api = 26
+tags = ["desktop", "panel", "bar", "service", "productivity", "utility"]
