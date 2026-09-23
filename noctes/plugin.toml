@@ -1,0 +1,248 @@
+id          = "remo/noctes"
+name        = "Noctes"
+version     = "0.19.0"
+plugin_api  = 26
+author      = "remo"
+license     = "MIT"
+icon        = "note"
+description = "Configurable stickers for your desktop: one widget per note, theme-aware paper, plain-text storage."
+tags        = ["desktop", "panel", "bar", "service", "productivity", "utility"]
+dependencies = ["python3"]
+
+# Headless owner of the note list. Every surface below is a thin client that
+# watches noctes.* state and drives it through noctes.cmd.
+[[service]]
+id    = "service"
+entry = "service.luau"
+
+# Bar widget: note count, opens the panel.
+[[widget]]
+id    = "bar"
+entry = "bar.luau"
+
+  [[widget.setting]]
+  key       = "show_count"
+  type      = "bool"
+  label_key = "settings.show_count.label"
+  default   = true
+
+# Panel: the only surface that can take keyboard focus, so all typing lives here.
+# Floating rather than attached: the board opens it with no bar button to anchor
+# to, and an attached panel has nothing to attach to in that path.
+[[panel]]
+id        = "panel"
+entry     = "panel.luau"
+width     = 420
+height    = 600
+placement = "floating"
+position  = "center"
+
+# Desktop widget: ONE post-it per instance. Add one widget per note you want on
+# the desktop. Background layer-shell surface, so it takes clicks but never the
+# keyboard; editing hands off to the panel.
+[[desktop_widget]]
+id    = "note"
+entry = "note.luau"
+
+  # Which note this post-it shows. A key is a stable human-readable handle, so
+  # the widget keeps showing the same note no matter how the list reorders.
+  # An unknown key means the post-it is empty until it is first written to.
+  [[desktop_widget.setting]]
+  key             = "key"
+  type            = "string"
+  label_key       = "settings.key.label"
+  description_key = "settings.key.description"
+  default         = ""
+
+  [[desktop_widget.setting]]
+  key             = "color"
+  type            = "select"
+  label_key       = "settings.color.label"
+  description_key = "settings.color.description"
+  default         = "auto"
+  options         = [
+    { value = "auto",   label_key = "color.auto"   },
+    { value = "yellow", label_key = "color.yellow" },
+    { value = "orange", label_key = "color.orange" },
+    { value = "pink",   label_key = "color.pink"   },
+    { value = "red",    label_key = "color.red"    },
+    { value = "purple", label_key = "color.purple" },
+    { value = "blue",   label_key = "color.blue"   },
+    { value = "green",  label_key = "color.green"  },
+    { value = "gray",   label_key = "color.gray"   },
+  ]
+
+  [[desktop_widget.setting]]
+  # Off by default: see the note in note.luau. The corner is still selectable
+  # for anyone who wants it.
+  key             = "fold"
+  type            = "select"
+  label_key       = "settings.fold.label"
+  description_key = "settings.fold.description"
+  default         = "none"
+  options         = [
+    { value = "auto",         label_key = "fold.auto"         },
+    { value = "none",         label_key = "fold.none"         },
+    { value = "bottom_right", label_key = "fold.bottom_right" },
+    { value = "bottom_left",  label_key = "fold.bottom_left"  },
+  ]
+
+  [[desktop_widget.setting]]
+  key             = "tape"
+  type            = "select"
+  label_key       = "settings.tape.label"
+  description_key = "settings.tape.description"
+  default         = "auto"
+  options         = [
+    { value = "auto",   label_key = "tape.auto"   },
+    { value = "none",   label_key = "tape.none"   },
+    { value = "left",   label_key = "tape.left"   },
+    { value = "center", label_key = "tape.center" },
+    { value = "right",  label_key = "tape.right"  },
+  ]
+
+  # The host centers a plugin widget's tree at its natural size inside the
+  # widget box, so the paper carries its own size instead of stretching.
+  [[desktop_widget.setting]]
+  key             = "paper_width"
+  type            = "int"
+  label_key       = "settings.paper_width.label"
+  description_key = "settings.paper_size.description"
+  default         = 220
+  min             = 80
+  max             = 900
+
+  [[desktop_widget.setting]]
+  key             = "paper_height"
+  type            = "int"
+  label_key       = "settings.paper_height.label"
+  description_key = "settings.paper_size.description"
+  default         = 200
+  min             = 60
+  max             = 900
+
+  # Patrick Hand has a small x-height, so its comfortable reading size is a
+  # couple of points above a UI font's.
+  [[desktop_widget.setting]]
+  key             = "font_size"
+  type            = "int"
+  label_key       = "settings.font_size.label"
+  description_key = "settings.font_size.description"
+  default         = 16
+  min             = 8
+  max             = 40
+
+  [[desktop_widget.setting]]
+  key       = "max_lines"
+  type      = "int"
+  label_key = "settings.max_lines.label"
+  default   = 14
+  min       = 1
+  max       = 60
+
+  [[desktop_widget.setting]]
+  key             = "show_title"
+  type            = "bool"
+  label_key       = "settings.show_title.label"
+  description_key = "settings.show_title.description"
+  default         = true
+
+  # 0 means "follow the plugin-wide opacity"; anything above overrides it for
+  # this sheet alone. Named apart from the plugin-level key on purpose: a
+  # matching name makes the host shadow one with the other and warn about it.
+  [[desktop_widget.setting]]
+  key             = "opacity_override"
+  type            = "double"
+  label_key       = "settings.opacity_override.label"
+  description_key = "settings.opacity_override.description"
+  default         = 0.0
+  min             = 0.0
+  max             = 1.0
+  step            = 0.02
+
+  [[desktop_widget.setting]]
+  key             = "shadow"
+  type            = "bool"
+  label_key       = "settings.shadow.label"
+  description_key = "settings.shadow.description"
+  default         = true
+
+  # Per sheet, on top of the plugin-wide switch below.
+  [[desktop_widget.setting]]
+  key             = "use_theme_colors"
+  type            = "select"
+  label_key       = "settings.use_theme_colors.label"
+  description_key = "settings.use_theme_colors.description"
+  default         = "inherit"
+  options         = [
+    { value = "inherit", label_key = "theme_colors.inherit" },
+    { value = "on",      label_key = "theme_colors.on"      },
+    { value = "off",     label_key = "theme_colors.off"     },
+  ]
+
+  # Handwriting by default, so a post-it does not read as UI text. The bundled
+  # Patrick Hand (SIL OFL, see PatrickHand-OFL.txt) is plugin-relative; any
+  # other .ttf/.otf works by absolute or ~ path, and empty keeps the shell font.
+  [[desktop_widget.setting]]
+  key             = "font_path"
+  type            = "string"
+  label_key       = "settings.font_path.label"
+  description_key = "settings.font_path.description"
+  default         = "PatrickHand-Regular.ttf"
+
+# Plugin-level settings, shared by every surface.
+[[setting]]
+key             = "default_color"
+type            = "select"
+label_key       = "settings.default_color.label"
+description_key = "settings.default_color.description"
+default         = "auto"
+options         = [
+  { value = "auto",   label_key = "color.auto"   },
+  { value = "yellow", label_key = "color.yellow" },
+  { value = "orange", label_key = "color.orange" },
+  { value = "pink",   label_key = "color.pink"   },
+  { value = "red",    label_key = "color.red"    },
+  { value = "purple", label_key = "color.purple" },
+  { value = "blue",   label_key = "color.blue"   },
+  { value = "green",  label_key = "color.green"  },
+  { value = "gray",   label_key = "color.gray"   },
+]
+
+# Paper follows the Noctalia palette instead of the classic paper colors. The
+# palette tracks the wallpaper on a generated theme, so the whole wall recolors
+# whenever the wallpaper does.
+[[setting]]
+key             = "theme_colors"
+type            = "bool"
+label_key       = "settings.theme_colors.label"
+description_key = "settings.theme_colors.description"
+default         = true
+
+# Sheets sit at a small random angle. Off squares every one of them - which
+# means rewriting their rotation in Noctalia's settings, since rotation is host
+# state, so the service shells out to tools/noctes-scatter when this changes.
+[[setting]]
+key             = "tilt"
+type            = "bool"
+label_key       = "settings.tilt.label"
+description_key = "settings.tilt.description"
+default         = true
+
+# How solid the paper is, for every sheet that does not override it.
+[[setting]]
+key             = "paper_opacity"
+type            = "double"
+label_key       = "settings.paper_opacity_all.label"
+description_key = "settings.paper_opacity_all.description"
+default         = 0.96
+min             = 0.2
+max             = 1.0
+step            = 0.02
+
+[[setting]]
+key             = "save_path"
+type            = "string"
+label_key       = "settings.save_path.label"
+description_key = "settings.save_path.description"
+default         = ""
