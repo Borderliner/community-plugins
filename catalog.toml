@@ -2950,3 +2950,16 @@ icon = "pointer"
 description = "Pick, import and build cursor themes, then apply them everywhere at once."
 plugin_api = 8
 tags = ["panel", "shortcut", "theming", "utility", "niri", "hyprland", "sway", "mangowc"]
+
+[[plugin]]
+id = "borderliner/jalali_calendar"
+name = "Jalali Calendar"
+version = "1.0.0"
+updated_at = 1790164983
+added_at = 1790164983
+author = "borderliner"
+license = "MIT"
+icon = "calendar"
+description = "Iranian Solar Hijri calendar with official holidays, plus Hijri Qamari and Gregorian dates."
+plugin_api = 22
+tags = ["time", "clock", "utility"]
