@@ -761,8 +761,8 @@ rev = "f6983da41aeffeb5908001b835be4011821e5913"
 [[plugin]]
 id = "jamesfeeder/special-workspaces"
 name = "Special Workspaces"
-version = "1.6.1"
-updated_at = 1789255768
+version = "1.7.0"
+updated_at = 1790165792
 added_at = 1785121575
 author = "jamesfeeder"
 license = "MIT"
