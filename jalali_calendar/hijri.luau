@@ -9,8 +9,12 @@
 -- that point this module *continues the real sequence* with tabular month
 -- lengths anchored to the last observed start, rather than restarting from a
 -- computed epoch -- a prediction that stays within a day instead of drifting.
--- isExact() reports which side of that line a date falls on, so the UI never
--- overstates its precision.
+-- The same extrapolation runs backwards for dates before the table.
+--
+-- isExact() and lookup().exact report whether a date's month start was
+-- observed or extrapolated, in either direction, so a caller can avoid
+-- presenting a prediction as fact. The bundled UI does not currently surface
+-- the distinction; this is a guarantee of the module's API.
 
 -- Noctalia's require needs the ".luau" extension; the standalone luau CLI the
 -- tests run under rejects it. Trying both lets one source file load in each,
@@ -64,6 +68,11 @@ end
 
 reindex()
 
+-- Both ends of the observed table, captured once before anything can extend
+-- it. `starts` is mutated in place -- extendTo() appends and extendBefore()
+-- prepends -- so reading either bound from it later would move the edge of
+-- "observed" to wherever the last extrapolation reached.
+local EXACT_MIN_JDN = if exactCount > 0 then starts[1][1] else 0
 local EXACT_MAX_JDN = if exactCount > 0 then starts[exactCount][1] else 0
 local INTERPOLATED = data.hijriInterpolated or {}
 
@@ -154,7 +163,7 @@ end
 -- True only when this date's month start came from observation: inside the
 -- table's range, and not one of the months bridged across a gap in the source.
 function M.isExact(jdn: number): boolean
-  if exactCount == 0 or jdn > EXACT_MAX_JDN or jdn < starts[1][1] then
+  if exactCount == 0 or jdn > EXACT_MAX_JDN or jdn < EXACT_MIN_JDN then
     return false
   end
   local hy, hm = M.fromJDN(jdn)
@@ -196,7 +205,7 @@ function M.lookup(jdn: number)
   local length = if i < #starts then starts[i + 1][1] - entry[1] else tabularLength(hy, hm)
   local exact = jdn <= EXACT_MAX_JDN
     and exactCount > 0
-    and jdn >= starts[1][1]
+    and jdn >= EXACT_MIN_JDN
     and INTERPOLATED[`{hy}:{hm}`] == nil
   return {
     year = hy,

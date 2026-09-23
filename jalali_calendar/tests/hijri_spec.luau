@@ -70,6 +70,27 @@ return function()
     h.eq(bad, 0, "no out-of-range hijri components")
   end)
 
+  h.describe("exactness survives backward extension", function()
+    -- Regression for a review note on community-plugins#819. The lower bound
+    -- of the observed table used to be read live from starts[1], which
+    -- extendBefore() mutates. Converting any date before the table (here
+    -- 1970, which extrapolates back to 1389 AH) moved that bound, and every
+    -- extrapolated date after it reported itself as observed.
+    local before = jalali.gregorianToJDN(1970, 1, 1)
+    h.eq(hijri.isExact(before), false, "1970 is outside the observed table")
+
+    local y = hijri.fromJDN(before) -- forces a backward extension
+    h.ok(y < 1400, `1970 extrapolates before the table, got {y}`)
+
+    h.eq(hijri.isExact(before), false, "still not exact after extending backwards")
+    h.eq(hijri.lookup(before).exact, false, "lookup agrees after extending backwards")
+
+    -- The observed range itself must be unaffected.
+    local observed = jalali.gregorianToJDN(2025, 6, 27) -- 1447/1/1
+    h.eq(hijri.isExact(observed), true, "observed dates stay exact")
+    h.eq(hijri.lookup(observed).exact, true, "and lookup agrees")
+  end)
+
   h.describe("month length", function()
     h.eq(hijri.monthLength(1447, 1), 29, "muharram 1447 ran 29 days")
     local len = hijri.monthLength(1447, 2)
