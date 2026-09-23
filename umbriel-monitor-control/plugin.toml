@@ -1,5 +1,5 @@
-# Umbriel Monitor Control - display placement, resolution and refresh rate for
-# the Umbriel compositor, from the Noctalia bar.
+# Umbriel Monitor Control - display placement, resolution, refresh rate and
+# rotation for the Umbriel compositor, from the Noctalia bar.
 #
 # One [[service]] owns every compositor call and every config write: it polls
 # `umbriel outputs --json`, applies changes by patching [output.*] sections in
@@ -10,14 +10,14 @@
 
 id = "muhammadessam/umbriel-monitor-control"
 name = "Umbriel Monitor Control"
-version = "0.2.1"
+version = "0.3.0"
 plugin_api = 24
 author = "muhammadessam"
 license = "MIT"
 dependencies = ["umbriel"]
 tags = ["bar", "panel", "service", "shortcut", "system", "utility", "hardware", "umbriel"]
 icon = "device-desktop"
-description = "Umbriel: place monitors left/right/above/below and set resolution and refresh rate; saved to the config."
+description = "Umbriel: place monitors left/right/above/below and set resolution, refresh rate and rotation; saved to the config."
 
 [[setting]]
 key = "config_path"

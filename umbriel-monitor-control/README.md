@@ -1,11 +1,11 @@
 # Umbriel Monitor Control
 
 Place and tune your monitors from the Noctalia bar: move a display left,
-right, above or below the others, and change its resolution and refresh rate.
-Every change is written into the Umbriel config file (validated before it
-lands, restored if invalid) and reloaded live, so settings persist across
-reboots. The same panel is one click away from the control center, through the
-plugin's `display` tile.
+right, above or below the others, and change its resolution, refresh rate and
+rotation. Every change is written into the Umbriel config file (validated
+before it lands, restored if invalid) and reloaded live, so settings persist
+across reboots. The same panel is one click away from the control center,
+through the plugin's `display` tile.
 
 **Umbriel only.** This plugin drives the Umbriel compositor through its CLI and
 its config file; it does nothing under niri, Hyprland, Sway or any other
@@ -46,10 +46,15 @@ draw in one row. The focused output's rectangle carries the thicker border.
 
 In the panel, each monitor card has a resolution dropdown, a refresh-rate
 dropdown and an Apply button, plus four placement buttons (left / right / up /
-down). A placement moves one axis only: the monitor lands just outside the
-others' edge on that side and level with them on the other axis, so left/right
-produce a row and up/down a column. With the other monitors at the origin that
-is the plain `-x` / `+x` / `-y` / `+y` move (y stays 0, x stays 0).
+down) and a rotation dropdown. The rotation dropdown lists Umbriel's eight
+transforms - 0°, 90°, 180°, 270°, and the same four flipped - and applies on
+the pick: which variant is right is only visible on screen, and the select
+always shows the transform the compositor is actually using.
+
+A placement moves one axis only: the monitor lands just outside the others'
+edge on that side and level with them on the other axis, so left/right produce
+a row and up/down a column. With the other monitors at the origin that is the
+plain `-x` / `+x` / `-y` / `+y` move (y stays 0, x stays 0).
 
 Below them, a **Position** row takes the two coordinates by hand — logical
 pixels, `x` then `y`, as the legend and the map show them (`mode size / scale`;
@@ -84,6 +89,12 @@ noctalia msg panel-toggle muhammadessam/umbriel-monitor-control:panel
 - Resolution/refresh options come from the modes the display advertises, so
   the dropdowns only ever offer something the monitor can do. Umbriel falls
   back to the preferred mode if a saved mode cannot be applied later.
+- Rotation is written as `transform` in the output's section, limited to
+  Umbriel's vocabulary (`normal`, `90`, `180`, `270`, `flipped`, `flipped-90`,
+  `flipped-180`, `flipped-270`); anything else is refused before the file is
+  touched. A 90°/270° transform (flipped or not) swaps the output's logical
+  width and height, which is the space the arrangement map and the position
+  fields work in.
 - Placement uses logical layout coordinates (mode size divided by scale),
   matching Umbriel's own `position` semantics.
 - Known limitation: `[output.*]` headers with the quoted monitor-name form are

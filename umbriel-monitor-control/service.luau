@@ -3,11 +3,12 @@
 -- Umbriel config file.
 --
 -- Reads the display inventory with `umbriel outputs --json`, and applies a
--- change by patching the matching [output.*] section in the config file, then
--- `umbriel validate` against the patched copy and `umbriel msg config-reload`
--- on success. A failed validate restores the previous file, so a bad edit can
--- never take the session's config down. Because the change lands in the
--- config file itself, it survives reboots by definition.
+-- change (mode, position, transform) by patching the matching [output.*]
+-- section in the config file, then `umbriel validate` against the patched copy
+-- and `umbriel msg config-reload` on success. A failed validate restores the
+-- previous file, so a bad edit can never take the session's config down.
+-- Because the change lands in the config file itself, it survives reboots by
+-- definition.
 --
 --   noctalia.state.set("monitor.state", snapshot)    UI entries render this
 --   noctalia.state.watch("monitor.request", handler)  actions from bar/panel
@@ -198,6 +199,16 @@ local function handleRequest(value)
   local fields, action = nil, value.action
   if action == "set-mode" and type(value.mode) == "string" then
     fields = { mode = value.mode }
+  elseif action == "rotate" and type(value.name) == "string" then
+    -- One of Umbriel's eight transform values; anything else is refused here,
+    -- so a typo can never reach the config file. Rotation applies straight
+    -- away: a transform is a single pick you have to see to choose, and the
+    -- panel offers no draft for it.
+    if not config.isTransform(value.transform) then
+      noctalia.notifyError(noctalia.tr("notify.apply_failed"), noctalia.tr("notify.bad_transform"))
+      return
+    end
+    fields = { transform = value.transform }
   elseif action == "place" and type(value.name) == "string" then
     -- Exact position typed in the panel. Validated here as well as there, since
     -- the same request can arrive over IPC without the panel involved.
