@@ -89,6 +89,7 @@ body:
         - godot-provider
         - gslapper
         - hassio
+        - herdr
         - hotspot
         - hypr-layout-switcher
         - hypr-screen-mirror
