@@ -64,6 +64,7 @@ body:
         - config-swap
         - contact-sounds
         - crashes
+        - cursor
         - custom-shortcut
         - daily-wallpaper
         - deepseek_usage
