@@ -11,10 +11,14 @@ local function titles(list)
   return table.concat(out, " | ")
 end
 
--- What the plugin ships with: civil and ancient Iranian days, no religious or
--- political commemorations, no Afghan events.
+-- What the plugin ships with: civil and ancient Iranian days on; religious and
+-- Afghan events off.
 local DEFAULT = { national = true, ancient = true }
-local ALL = { national = true, ancient = true, religious = true, political = true, afghan = true }
+
+-- The only groups the data may carry. Anything else means the generator
+-- emitted a label the settings cannot switch.
+local KNOWN_GROUPS = { national = true, religious = true, ancient = true, afghan = true }
+local ALL = { national = true, ancient = true, religious = true, afghan = true }
 
 local function hasHoliday(list)
   for _, o in list do
@@ -74,11 +78,15 @@ return function()
           if type(o.holiday) ~= "boolean" then
             bad += 1
           end
+          if not KNOWN_GROUPS[o.category] then
+            bad += 1
+            print(`unexpected group {tostring(o.category)} on {jm}/{jd}: {o.title}`)
+          end
         end
       end
     end
     h.ok(seen > 100, `1405 has a substantial occasion list, got {seen}`)
-    h.eq(bad, 0, "every occasion has a title and a holiday flag")
+    h.eq(bad, 0, "every occasion has a title, a holiday flag and a known group")
   end)
 
   h.describe("official holiday count is plausible", function()
@@ -113,35 +121,35 @@ return function()
     h.eq(holidays.isHoliday(jy, jm, jd, DEFAULT), true, "ashura is a holiday")
     h.eq(hasHoliday(shown), true, `and is named by default: {titles(shown)}`)
 
-    -- 22 Bahman is a political holiday; it is still the name of a day off.
+    -- 22 Bahman is a public holiday, so it is named by default too.
     local bahman = holidays.forDay(1405, 11, 22, DEFAULT)
     h.eq(hasHoliday(bahman), true, `22 bahman is named by default: {titles(bahman)}`)
   end)
 
-  h.describe("political commemorations are not carried at all", function()
-    -- 31 Shahrivar used to carry the start of the Iran-Iraq war and Sacred
-    -- Defense Week. Those are not a toggle: they are absent from the data, so
-    -- enabling every category cannot bring them back.
+  h.describe("excluded entries are not carried at all", function()
+    -- 31 Shahrivar used to carry two entries from the generator's exclusion
+    -- list. They are absent from the data rather than switched off, so
+    -- enabling every group cannot bring them back.
     for _, entry in holidays.forDay(1405, 6, 31, ALL) do
       h.ok(
         not string.find(entry.title, "دفاع مقدس")
           and not string.find(entry.title, "جنگ تحمیلی"),
-        `no war commemoration on 31 shahrivar, got: {entry.title}`
+        `no excluded entry on 31 shahrivar, got: {entry.title}`
       )
     end
     h.eq(holidays.isHoliday(1405, 6, 31, ALL), false, "31 shahrivar is not a day off")
   end)
 
-  h.describe("political public holidays survive, since they are days off", function()
-    -- 22 Bahman is an Islamic Republic anniversary and a public holiday. The
-    -- commemorations go; the day off stays, named.
+  h.describe("public holidays on the exclusion list are still carried", function()
+    -- 22 Bahman's title matches the exclusion list, but it is a public holiday,
+    -- so it stays, named, under a real group.
     local shown = holidays.forDay(1405, 11, 22, DEFAULT)
     h.eq(holidays.isHoliday(1405, 11, 22, DEFAULT), true, "22 bahman is a day off")
     h.eq(hasHoliday(shown), true, `and keeps its name: {titles(shown)}`)
   end)
 
   h.describe("religious honorifics are stripped from titles", function()
-    -- "حضرت" is an honorific and "سعید" devotional framing; the events keep
+    -- "حضرت" and the "سعید" in "عید سعید" are honorifics; the events keep
     -- their names without them.
     local eid = holidays.forDay(1405, 1, 1, DEFAULT)
     local joined = titles(eid)

@@ -41,26 +41,22 @@ BREAKS = [-61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210, 1635, 2060]
 # that would swamp the calendar) and so is "IranFormer" (a single superseded
 # entry).
 #
-# Iran's rows are split further, because the printed Iranian calendar mixes
-# three quite different things: civil and cultural days, Shia religious
-# observances, and Islamic Republic political and military commemorations.
-# Which of those a person wants to see is a preference, not a fact, so each
-# becomes a toggle rather than being decided here.
+# Iran's rows are grouped into civil and cultural days and religious
+# observances, each a toggle in the plugin's settings. Rows matching
+# EXCLUDED_MARKERS are not carried at all, except public holidays.
 TYPE_CATEGORY = {
     "AncientIran": "ancient",
     "Afghanistan": "afghan",
 }
 
-# Ordered rules, political first: an event can be both political and
-# religiously framed (an attack on a seminary, say), and for filtering purposes
-# either bucket hides it for someone who wants neither.
+# Ordered rules, exclusions first, so a title that matches both lists stays
+# excluded.
 #
 # These are keyword heuristics over Persian titles, not a curated taxonomy --
 # the upstream data ships none. They are listed in full so they can be audited
 # and corrected. Substring matching means short words are dangerous: "بیعت"
-# was removed because it matches inside "طبیعت" and filed Nature Day as a
-# political commemoration.
-POLITICAL_MARKERS = [
+# was removed because it matches inside "طبیعت" and excluded Nature Day.
+EXCLUDED_MARKERS = [
     "انقلاب", "خمینی", "خامنه", "رهبر معظم", "بسیج", "سپاه", "دفاع مقدس",
     "جنگ", "استکبار", "قدس", "ولایت فقیه", "ستم‌شاهی", "ستمشاهی", "طاغوت",
     "پهلوی", "رضاخان", "رضا شاه", "آمریکا", "امریکا", "اسرائیل", "صهیونیس",
@@ -70,9 +66,6 @@ POLITICAL_MARKERS = [
     "انتفاضه", "حجاب و عفاف", "نماز جمعه", "ارتش", "پدافند", "قرارگاه",
     "نیروی زمینی", "نیروی دریایی", "نیروی هوایی", "انتظامی", "بعث", "صدام",
     "آزادسازی", "بیت‌المقدس", "قیام",
-    # Regional geopolitics. The printed calendar carries a run of days about
-    # Palestine, Israel and the US; they are commemorations of a foreign policy
-    # rather than Iranian civil life, so they belong with the political set.
     "فلسطین", "اقصی", "غزه", "حماسه", "جهاد", "استعمار", "تروریسم",
     "نسل‌کشی", "صنعت دفاعی", "فناوری هسته‌ای", "روز سرباز",
 ]
@@ -93,7 +86,7 @@ def normalize_title(title):
     stripped only in the fixed phrase "عید سعید" -- it is also a surname, and
     a blind removal would mangle "آیت‌الله سعیدی".
 
-    The historical event is unchanged; only the devotional framing goes.
+    The event itself is unchanged; only the honorific is removed.
     """
     title = title.replace("عید سعید", "عید")
     title = re.sub(r"حضرت\s+", "", title)
@@ -102,14 +95,26 @@ def normalize_title(title):
 
 
 def classify(event):
-    """Bucket one Iranian event. Lunar-calendar rows are Shia observances
-    almost by definition, which is why the calendar itself is a signal."""
+    """Group one Iranian event, or return "excluded" for a row on the
+    exclusion list. Lunar-calendar rows are religious observances almost by
+    definition, which is why the calendar itself is a signal."""
     title = event["title"]
-    if any(k in title for k in POLITICAL_MARKERS):
-        return "political"
+    if any(k in title for k in EXCLUDED_MARKERS):
+        return "excluded"
     if event["calendar"] == "Hijri" or any(k in title for k in RELIGIOUS_MARKERS):
         return "religious"
     return "national"
+
+
+def holiday_group(event):
+    """Group for a public holiday whose title is on the exclusion list.
+
+    Holidays are always carried, so they need a real group. The calendar they
+    are fixed in decides it: lunar holidays are religious, solar ones national.
+    Title keywords are deliberately not used here -- "اسلام" and "امام" occur
+    in the names of solar national holidays too.
+    """
+    return "religious" if event["calendar"] == "Hijri" else "national"
 
 
 def idiv(a, b):
@@ -266,20 +271,19 @@ def main():
     gregorian = defaultdict(lambda: defaultdict(list))
     skipped = []
 
-    dropped_political = 0
+    excluded = 0
     for e in wanted:
         category = TYPE_CATEGORY.get(e["type"]) or classify(e)
         is_holiday = bool(e["holiday"])
 
-        # Islamic Republic political and military commemorations are not
-        # carried at all -- they are not offered as a toggle, because a
-        # calendar of them is not something this plugin sets out to provide.
-        # The handful that are public holidays stay: those are days people
-        # actually get off, and dropping them would make the calendar wrong
-        # about the working week.
-        if category == "political" and not is_holiday:
-            dropped_political += 1
-            continue
+        # Rows on the exclusion list are not carried. Public holidays are the
+        # exception: dropping a day off would make the calendar wrong about the
+        # working week, so those stay, filed under a real group.
+        if category == "excluded":
+            if not is_holiday:
+                excluded += 1
+                continue
+            category = holiday_group(e)
 
         entry = (normalize_title(e["title"]), is_holiday, category)
         cal, rule = e["calendar"], e["rule"]
@@ -367,9 +371,6 @@ def main():
     w("-- category is one of:")
     w("--   national   Iranian civil, cultural and scientific days")
     w("--   religious  Shia and Islamic observances")
-    w("--   political  public holidays that fall on Islamic Republic")
-    w("--              anniversaries; the non-holiday commemorations are not")
-    w("--              carried at all")
     w("--   ancient    pre-Islamic / Zoroastrian Iranian festivals")
     w("--   afghan     Afghan national days")
     w("--")
@@ -464,7 +465,7 @@ def main():
     )
     print(f"wrote {args.output}")
     print(f"  solar={counts[0]} lunar={counts[1]} lunarEndOfMonth={counts[2]} gregorian={counts[3]}")
-    print(f"  dropped {dropped_political} non-holiday political commemorations")
+    print(f"  excluded {excluded} entries")
     print(f"  hijri years {hy_lo}-{hy_hi}, exact through JDN {max_jdn} "
           f"({'-'.join(str(x) for x in gregorian_from_jdn(max_jdn))})")
     if skipped:

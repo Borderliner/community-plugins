@@ -71,17 +71,11 @@ function M.normalize(raw)
     -- hand-edited config should not be able to produce a zero or negative
     -- font size.
     scale = math.max(0.7, math.min(2.0, tonumber(raw.scale) or 1.0)),
-    -- Which kinds of occasion to show. Iran's printed calendar mixes civil,
-    -- religious and Islamic Republic political days; which of those someone
-    -- wants is a preference, so each is a toggle. Public-holiday status is not
-    -- filtered by these -- that is a fact about Iranian law, not a taste.
+    -- Which groups of occasion to show. Public holidays are not filtered by
+    -- these: an Iranian day off is always shown.
     categories = {
       national = raw.events_national ~= false,
       religious = raw.events_religious == true,
-      -- Not a toggle: the data carries no non-holiday political rows at all.
-      -- Political public holidays still show, because official holidays
-      -- bypass these filters entirely.
-      political = false,
       ancient = raw.events_ancient ~= false,
       afghan = raw.events_afghan == true,
     },

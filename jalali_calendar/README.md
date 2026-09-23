@@ -91,24 +91,17 @@ small and stays correct for any year you browse to.
 
 ### Which occasions are included
 
-The printed Iranian calendar mixes civil and cultural days, Shia religious
-observances, and Islamic Republic political and military commemorations.
+Occasions come in four groups, each switchable in the settings: Iranian civil
+and cultural days, ancient Iranian festivals, religious observances, and Afghan
+national days. Civil days and ancient festivals are on by default.
 
-Political commemorations are **not carried at all** - 138 non-holiday entries
-are dropped when the data is generated, and there is no switch to bring them
-back. The eleven that are public holidays stay, because those are days people
-actually get off.
+Iranian public holidays are always shown, by name, whatever is switched on, so
+the calendar always tells you which days are days off.
 
-Public holidays always keep their real names whatever the filters are set to:
-the name of a day off is information, not an endorsement. The switches apply to
-commemorations only.
+Titles are shown without honorifics such as «حضرت».
 
-Event titles are stripped of religious honorifics. The historical event is
-untouched; only the devotional framing goes.
-
-The split between civil, religious and political is keyword-based over Persian
-titles, because the upstream data ships no taxonomy. The rules are listed in
-full in `tools/generate_occasions.py` so they can be audited and corrected.
+The grouping is keyword-based over the Persian titles, because the upstream
+data ships no categories. The rules are in `tools/generate_occasions.py`.
 
 ### How accurate the Hijri dates are
 

@@ -47,16 +47,14 @@ end
 
 -- Entries are stored as compact arrays: { title, isOfficialHoliday, category }.
 --
--- Category filtering applies to commemorations, not to public holidays. An
--- official day off is named whatever its category: Eid al-Fitr and Ashura are
--- the names of days Iranians actually get off, and printing "official holiday"
--- instead tells the reader less than the calendar knows. What the filters are
--- for is the several hundred *non-holiday* entries -- war anniversaries,
--- martyrdom days, operation commemorations -- that crowd the printed calendar.
--- Categories whose holiday flag describes Iranian law. An Afghan public
--- holiday is not an Iranian day off, so it only counts when the user has
--- actually opted into Afghan events.
-local IRANIAN = { national = true, religious = true, political = true }
+-- Category filtering applies to occasions, not to public holidays: an Iranian
+-- day off is always shown, by name, whatever is switched on, because the
+-- calendar should always say which days are days off.
+--
+-- Categories whose holiday flag is an Iranian public holiday. An Afghan public
+-- holiday is not an Iranian day off, so it only counts when the user has opted
+-- into Afghan events.
+local IRANIAN = { national = true, religious = true }
 
 local function append(out, bucket, enabled, state)
   if bucket == nil then
