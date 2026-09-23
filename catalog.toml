@@ -2911,3 +2911,16 @@ icon = "palette"
 description = "Browse saved themes in a carousel and apply palette, wallpaper, and templates in one click."
 plugin_api = 28
 tags = ["theming"]
+
+[[plugin]]
+id = "hy4ri/herdr"
+name = "Herdr"
+version = "1.0.0"
+updated_at = 1790164461
+added_at = 1790164461
+author = "Hy4ri"
+license = "MIT"
+icon = "robot"
+description = "Monitor Herdr sessions and coding agents from the Noctalia bar."
+plugin_api = 24
+tags = ["bar", "panel", "service", "ai", "development", "productivity"]
