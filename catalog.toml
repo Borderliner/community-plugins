@@ -2937,3 +2937,16 @@ icon = "notes"
 description = "Markdown notes and todos from the bar, with AI capture, summaries, rewriting and Q&A over your notes."
 plugin_api = 24
 tags = ["bar", "panel", "launcher", "ai", "productivity", "utility"]
+
+[[plugin]]
+id = "vn1k/cursor"
+name = "Cursor"
+version = "1.0.0"
+updated_at = 1790164936
+added_at = 1790164936
+author = "Vn1k"
+license = "MIT"
+icon = "pointer"
+description = "Pick, import and build cursor themes, then apply them everywhere at once."
+plugin_api = 8
+tags = ["panel", "shortcut", "theming", "utility", "niri", "hyprland", "sway", "mangowc"]
