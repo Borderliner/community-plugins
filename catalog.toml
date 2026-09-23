@@ -2473,13 +2473,13 @@ tags = ["ai", "development", "bar", "panel", "service", "productivity"]
 [[plugin]]
 id = "muhammadessam/umbriel-monitor-control"
 name = "Umbriel Monitor Control"
-version = "0.2.1"
-updated_at = 1789746088
+version = "0.3.0"
+updated_at = 1790165665
 added_at = 1789146573
 author = "muhammadessam"
 license = "MIT"
 icon = "device-desktop"
-description = "Umbriel: place monitors left/right/above/below and set resolution and refresh rate; saved to the config."
+description = "Umbriel: place monitors left/right/above/below and set resolution, refresh rate and rotation; saved to the config."
 plugin_api = 24
 tags = ["bar", "panel", "service", "shortcut", "system", "utility", "hardware", "umbriel"]
 
