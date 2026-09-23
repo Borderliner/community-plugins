@@ -141,6 +141,7 @@ body:
         - nix-monitor
         - nix-search
         - nix-status
+        - noctes
         - noctwhspr
         - nvim-projects
         - nvtop
