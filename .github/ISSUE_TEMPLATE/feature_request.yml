@@ -168,6 +168,7 @@ body:
         - proton-pass
         - pulsar-mouse
         - qrcode
+        - quill
         - quranwidget
         - radio
         - reading-list
