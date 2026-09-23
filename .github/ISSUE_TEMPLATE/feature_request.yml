@@ -102,6 +102,7 @@ body:
         - input-echo-bar
         - inventory-manager
         - ip-monitor
+        - jalali_calendar
         - jetbrains-provider
         - k8s-status
         - keybind-cheatsheet
